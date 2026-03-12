@@ -42,11 +42,13 @@ This document summarizes Promptfoo's core capabilities based on both product doc
 
 - Promptfoo includes a dedicated `code-scans` command group for scanning repositories for LLM-specific risks.
 - Documentation describes agentic code scanning that traces data flow to detect issues like prompt injection and PII exposure in pull requests and CI workflows.
+- In the open-source CLI, scan orchestration happens locally (diff collection, metadata extraction, optional local filesystem MCP server), then the scan request is sent to an agent server (default `https://api.promptfoo.app`) over Socket.IO using the `code-scan` agent client.
+- The repository contains the **client/orchestration logic** for code scanning, but not the cloud-side scanner implementation/prompt internals. Based on code paths and docs, GitHub App/CLI scans are cloud-backed by default unless self-hosting via a custom API host.
 
 ## 7) Model artifact auditing (ModelAudit integration)
 
-- The CLI includes `model-scan` capabilities that integrate with `modelaudit` tooling for model artifact security analysis.
-- Implementation includes modelaudit version checks, subprocess management, result parsing, and sharing support for model audit results.
+- The CLI `scan-model` command is a wrapper around the external open-source `modelaudit` executable (spawned as a subprocess), rather than a separate built-in scanner engine in this TypeScript repo.
+- Docs explicitly note parity between `modelaudit scan` and `promptfoo scan-model`, and implementation includes modelaudit installation/version checks, subprocess management, result parsing, and sharing support.
 
 ## 8) Dataset and assertion generation utilities
 
